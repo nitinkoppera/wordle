@@ -39,6 +39,59 @@ export default function Home() {
     },[solution]);
 
     // console.log(guesses);
+    
+    const lineBoxes = (guess,j) => {
+        const tiles = []
+        for (let i = 0; i < 5; i++) {
+            const char = guess[i]
+            tiles.push(<div key={i} className={classStyle(styles[j][i])}>
+                <span className='text-3xl'>
+                    {char}
+                </span>
+            </div>)
+        }
+        return <div key={j} className='grid grid-cols-5 gap-2 w-fit '>{tiles}</div>
+    }
+    const classStyle = (type) => {
+        switch (type) {
+            case '0':
+                return ' border-2 border-gray-400 bg-gray-400 rounded-md w-14 h-14 flex justify-center items-center'
+        
+            case '1':
+                return ' border-2 border-gray-400 rounded-md w-14 h-14 flex justify-center items-center'
+        
+            case '2':
+                return 'bg-yellow-600 border-2 border-gray-400 rounded-md w-14 h-14 flex justify-center items-center'
+        
+            case '3':
+                return 'bg-green-600 border-2 border-gray-400 rounded-md w-14 h-14 flex justify-center items-center'
+        
+            default:
+                break;
+        }
+    }
+
+    const [modalVisible,setModalVisible] = useState(null)
+    const [ copiedVisible, setCopiedVisible ] = useState(0)
+    const handleCopy = () => {
+        setCopiedVisible(1)
+        navigator.clipboard.writeText('http://localhost:3000/')
+        setTimeout(function() {
+            setCopiedVisible(0)
+        }, 1000);
+    }
+    const [pressedLetter,setPressedLetter] = useState(null)
+    const [guessedLetters,setGuessedLetters] = useState([])
+    const hoverClass = (letter) => {
+        
+        if(guessedLetters.find(lett =>  lett.toLocaleUpperCase() === letter.toLocaleUpperCase() )) {
+            return solution.split('').find((lett)=>{
+                return lett.toLocaleUpperCase() === letter.toLocaleUpperCase()})?' bg-yellow-600 text-black ':' bg-gray-600 text-white '
+            
+        }
+        return pressedLetter===letter ? ' bg-black text-white ' : 'bg-gray-200 '
+    }
+
     useEffect(() => {
     
         const checkWord = () => {
@@ -122,59 +175,6 @@ export default function Home() {
         , solution
         , styles
     ])
-    
-    const lineBoxes = (guess,j) => {
-        const tiles = []
-        for (let i = 0; i < 5; i++) {
-            const char = guess[i]
-            tiles.push(<div key={i} className={classStyle(styles[j][i])}>
-                <span className='text-3xl'>
-                    {char}
-                </span>
-            </div>)
-        }
-        return <div key={j} className='grid grid-cols-5 gap-2 w-fit '>{tiles}</div>
-    }
-    const classStyle = (type) => {
-        switch (type) {
-            case '0':
-                return ' border-2 border-gray-400 bg-gray-400 rounded-md w-14 h-14 flex justify-center items-center'
-        
-            case '1':
-                return ' border-2 border-gray-400 rounded-md w-14 h-14 flex justify-center items-center'
-        
-            case '2':
-                return 'bg-yellow-600 border-2 border-gray-400 rounded-md w-14 h-14 flex justify-center items-center'
-        
-            case '3':
-                return 'bg-green-600 border-2 border-gray-400 rounded-md w-14 h-14 flex justify-center items-center'
-        
-            default:
-                break;
-        }
-    }
-
-    const [modalVisible,setModalVisible] = useState(null)
-    const [ copiedVisible, setCopiedVisible ] = useState(0)
-    const handleCopy = () => {
-        setCopiedVisible(1)
-        navigator.clipboard.writeText('http://localhost:3000/')
-        setTimeout(function() {
-            setCopiedVisible(0)
-        }, 1000);
-    }
-    const [pressedLetter,setPressedLetter] = useState(null)
-    const [guessedLetters,setGuessedLetters] = useState([])
-    const hoverClass = (letter) => {
-        
-        if(guessedLetters.find(lett =>  lett.toLocaleUpperCase() === letter.toLocaleUpperCase() )) {
-            return solution.split('').find((lett)=>{
-                return lett.toLocaleUpperCase() === letter.toLocaleUpperCase()})?' bg-yellow-600 text-black ':' bg-gray-600 text-white '
-            
-        }
-        return pressedLetter===letter ? ' bg-black text-white ' : 'bg-gray-200 '
-    }
-
 
     return (
     <div className=''>
