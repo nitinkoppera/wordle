@@ -21,81 +21,81 @@ export default function Home() {
         const word = words[Math.floor(Math.random()*words.length)]
         // console.log(word+'---------------');
         getWord();
-        setMatched(false)
-        setLineNumber(0)
-        setLetterNumber(0)
-        setGuesses(['','','','','',''])
-        setStyles(Array(6).fill('11111'))
-        setGuessedLetters([])
+        setMatched(m => false)
+        setLineNumber(m => 0)
+        setLetterNumber(m => 0)
+        setGuesses(m => ['','','','','',''])
+        setStyles(m => Array(6).fill('11111'))
+        setGuessedLetters(m => [])
     }
     useEffect(() => {
         const getWord = () => {
         
-                setSolution(word);
+                setSolution(m => word);
         };
         const word = words[Math.floor(Math.random()*words.length)]
         // console.log(word+'---------------');
         getWord();
-    },[]);
+    },[solution]);
 
     // console.log(guesses);
-
-    const checkWord = () => {
-        if(solution.toLocaleUpperCase()===guesses[lineNumber].toLocaleUpperCase()){
-            styles[lineNumber] = '33333'
-            return true
-        }
-        let solStyle = ['1','1','1','1','1']
-        var styleArr = ['1','1','1','1','1']
-        for (let i = 0; i < 5; i++) {
-            const element = guesses[lineNumber][i];
-            if(element.toString().toLocaleUpperCase() === solution[i].toString().toLocaleUpperCase()){
-                styleArr[i] = '3'
-                solStyle[i] = '3'
+    useEffect(() => {
+    
+        const checkWord = () => {
+            if(solution.toLocaleUpperCase()===guesses[lineNumber].toLocaleUpperCase()){
+                styles[lineNumber] = '33333'
+                return true
             }
-        }
-        for (let i = 0; i < 5; i++) {
-            if(styleArr[i]==='1'){
+            let solStyle = ['1','1','1','1','1']
+            var styleArr = ['1','1','1','1','1']
+            for (let i = 0; i < 5; i++) {
                 const element = guesses[lineNumber][i];
-                for(let j = 0; j < 5; j++) {
-                    if(solStyle[j]==='1'){
-                        // console.log('comparing '+element.toString().toLocaleUpperCase()+'and '+solution[i].toString().toLocaleUpperCase());
-                        if(element.toString().toLocaleUpperCase() === solution[j].toString().toLocaleUpperCase()){
-                            styleArr[i]= '2'
-                            solStyle[j]= '2'
-                            break
+                if(element.toString().toLocaleUpperCase() === solution[i].toString().toLocaleUpperCase()){
+                    styleArr[i] = '3'
+                    solStyle[i] = '3'
+                }
+            }
+            for (let i = 0; i < 5; i++) {
+                if(styleArr[i]==='1'){
+                    const element = guesses[lineNumber][i];
+                    for(let j = 0; j < 5; j++) {
+                        if(solStyle[j]==='1'){
+                            // console.log('comparing '+element.toString().toLocaleUpperCase()+'and '+solution[i].toString().toLocaleUpperCase());
+                            if(element.toString().toLocaleUpperCase() === solution[j].toString().toLocaleUpperCase()){
+                                styleArr[i]= '2'
+                                solStyle[j]= '2'
+                                break
+                            }
                         }
                     }
                 }
             }
-        }
-        for(let j = 0; j < 5; j++) {
-            if(styleArr[j]==='1'){
-                styleArr[j]='0'
+            for(let j = 0; j < 5; j++) {
+                if(styleArr[j]==='1'){
+                    styleArr[j]='0'
+                }
             }
+            styles[lineNumber] = styleArr.join('');
+            setGuessedLetters([...guessedLetters, ...guesses[lineNumber].split('') ])
+            setStyles(styles)
+            return false
         }
-        styles[lineNumber] = styleArr.join('');
-        setGuessedLetters([...guessedLetters, ...guesses[lineNumber].split('') ])
-        setStyles(styles)
-        return false
-    }
-    useEffect(() => {
         const handleType = (event) => {
             if(matched) return
             if(event.key === 'Backspace' && letterNumber > 0){
-                setPressedLetter('Backspace')
+                setPressedLetter(p => 'Backspace')
                 // console.log(event.key);
                 guesses[lineNumber]=guesses[lineNumber].substring(0,guesses[lineNumber].length-1)
                 setLetterNumber(prev => prev-1)
                 // return
             }
             else if(event.key === 'Enter' && guesses[lineNumber].length===5){
-                setPressedLetter('Enter')
-                if(checkWord()){
-                    setModalVisible('MATCHED')
-                    setMatched(true)
+                setPressedLetter(p => 'Enter')
+                if(checkWord() === true){
+                    setModalVisible(m => 'MATCHED')
+                    setMatched(m => true)
                 }else if(guesses[5].length>=5){
-                    setModalVisible('FAILED LOL')
+                    setModalVisible(m => 'FAILED LOL')
                 }
                 setLineNumber(prev => prev+1)
                 
@@ -103,19 +103,25 @@ export default function Home() {
             }
             else if(guesses[5].length>=5) return
             else if(event.keyCode<=90 && event.keyCode>=65  && guesses[lineNumber].length<5){
-                setPressedLetter(event.key.toLocaleUpperCase())
+                setPressedLetter(p =>event.key.toLocaleUpperCase())
                 guesses[lineNumber]=guesses[lineNumber]+''+(event.key.toString())
-                setGuesses(guesses)
+                setGuesses(g => guesses)
                 setLetterNumber(prev => prev+1)
             }
             
             setTimeout(() => {
-                setPressedLetter(null)
+                setPressedLetter(p => null)
             }, 100);
         }
         window.addEventListener('keydown', handleType)
         return () => window.removeEventListener('keydown', handleType);
-    },[lineNumber,letterNumber])
+    },[lineNumber,letterNumber
+        , guesses 
+        , matched
+        ,guessedLetters
+        , solution
+        , styles
+    ])
     
     const lineBoxes = (guess,j) => {
         const tiles = []
@@ -173,7 +179,7 @@ export default function Home() {
     return (
     <div className=''>
         <Head>
-            <title>Nitin's Wordle</title>
+            <title>{`Nitin's Wordle`}</title>
             <meta name="description" content="Generated by create next app" />
             <link rel="icon" href="/favicon.ico" />
         </Head>
@@ -197,7 +203,7 @@ export default function Home() {
 
         <div className=' h-screen flex flex-col font-sans'>
             <div>
-                <h1 className='w-full text-center text-5xl font-extrabold font-sans py-10' >Nitin's Wordle</h1>
+                <h1 className='w-full text-center text-5xl font-extrabold font-sans py-10' >{`Nitin's Wordle`}</h1>
             </div>
             <div className=' flex justify-evenly items-center h-fit '>
                 <div className='w-1/2 flex justify-center items-center '>
