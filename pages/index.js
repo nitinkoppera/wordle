@@ -19,7 +19,7 @@ export default function Home() {
                 setSolution(word);
         };
         const word = words[Math.floor(Math.random()*words.length)]
-        // console.log(word+'---------------');
+        console.log(word+'---------------');
         getWord();
         setMatched(m => false)
         setLineNumber(m => 0)
