@@ -203,7 +203,7 @@ export default function Home() {
 
         <div className=' h-screen flex flex-col font-sans'>
             <div>
-                <h1 className='w-full text-center text-5xl font-extrabold font-sans py-10' >Nitin<span onClick={() => console.log(solution)}>{`&apos;`}</span>s Wordle`}</h1>
+                <h1 className='w-full text-center text-5xl font-extrabold font-sans py-10' >Nitin<span onClick={() => console.log(solution)}>&apos;</span>s Wordle`}</h1>
             </div>
             <div className=' flex justify-evenly items-center h-fit '>
                 <div className='w-1/2 flex justify-center items-center '>
